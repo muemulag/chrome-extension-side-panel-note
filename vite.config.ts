@@ -1,29 +1,40 @@
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 import { crx, defineManifest } from "@crxjs/vite-plugin";
+import packageJson from "./package.json" assert { type: "json" };
 
-const manifest = defineManifest({
-  manifest_version: 3,
-  name: "Reading time",
-  description:
-    "Add the reading time to Chrome Extension documentation articles",
-  version: "1.0",
-  icons: {
-    "16": "images/icon-16.png",
-    "32": "images/icon-32.png",
-    "48": "images/icon-48.png",
-    "128": "images/icon-128.png",
-  },
-  content_scripts: [
-    {
-      js: ["src/content.ts"],
-      matches: [
-        "https://developer.chrome.com/docs/extensions/*",
-        "https://developer.chrome.com/docs/webstore/*",
-      ],
+export default defineConfig(() => {
+  const manifest = defineManifest({
+    manifest_version: 3,
+    name: "Markdown SidePanel Notes",
+    description:
+      "Add the reading time to Chrome Extension documentation articles",
+    version: packageJson.version,
+    permissions: ["sidePanel", "tabs", "activeTab", "storage"],
+    host_permissions: ["<all_urls>"],
+    side_panel: {
+      default_path: "src/side_panel.tsx",
     },
-  ],
+  });
+
+  return {
+    plugins: [react(), crx({ manifest })],
+    define: {
+      __APP_VERSION__: JSON.stringify(packageJson.version),
+    },
+  };
 });
 
-export default defineConfig({
-  plugins: [crx({ manifest })],
-});
+// export default defineConfig({
+//   plugins: [react(), crx({ manifest })],
+//   build: {
+//     rollupOptions: {
+//       input: {
+//         side_panel: "src/sidepanel.tsx",
+//       },
+//     },
+//   },
+//   define: {
+//     __APP_VERSION__: JSON.stringify(packageJson.version),
+//   },
+// });
