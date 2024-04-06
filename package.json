@@ -1,0 +1,21 @@
+{
+  "name": "chrome-extension-side-panel-note",
+  "version": "0.0.1",
+  "description": "Chrome extension to add notes to side panel.",
+  "main": "index.js",
+  "repository": "git@github.com:muemulag/chrome-extension-side-panel-note.git",
+  "author": "muemura <m.uemura.x140@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^1.0.14",
+    "@types/chrome": "^0.0.265",
+    "typescript": "^5.4.4",
+    "vite": "^2.9.4"
+  }
+}
