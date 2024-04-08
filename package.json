@@ -2,7 +2,6 @@
   "name": "chrome-extension-side-panel-note",
   "version": "0.0.1",
   "description": "Chrome extension to add notes to side panel.",
-  "main": "index.js",
   "repository": "git@github.com:muemulag/chrome-extension-side-panel-note.git",
   "author": "muemura <m.uemura.x140@gmail.com>",
   "license": "MIT",
@@ -10,7 +9,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc --noEmit && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
     "preview": "vite preview",
     "test": "vitest"
@@ -18,16 +17,23 @@
   "dependencies": {
     "@headlessui/react": "^1.7.18",
     "clsx": "^2.1.0",
+    "easymde": "^2.18.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-redux": "^9.1.0"
+    "react-redux": "^9.1.0",
+    "react-simplemde-editor": "^5.2.0",
+    "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.23",
+    "@rollup/plugin-sucrase": "^5.0.2",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@tailwindcss/typography": "^0.5.12",
     "@types/chrome": "^0.0.265",
+    "@types/node": "^20.12.5",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.24",
+    "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
     "@vitejs/plugin-react": "^4.2.1",
@@ -44,6 +50,7 @@
     "eslint-plugin-vitest": "^0.4.2-beta.3",
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
+    "rollup-plugin-chrome-extension": "^3.6.12",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.4",
     "typescript-eslint": "^7.5.0",
