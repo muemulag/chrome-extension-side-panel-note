@@ -1,0 +1,48 @@
+name: Front Test
+
+on:
+  push:
+    branches:
+      - "**"
+      - "!main"
+
+concurrency:
+  # ref for branch
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  front-test:
+    name: Front Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/cache@v3
+        id: front-cache
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+      - run: cp .env.test .env && rm .env.*
+      - if: ${{ steps.front-cache.outputs.cache-hit != 'true' }}
+        run: yarn
+      - id: changed-files
+        uses: tj-actions/changed-files@v40
+        with:
+          files: |
+            src/**/*.{ts,tsx}
+          path: ./
+      - name: lint
+        run: |
+          set +e
+          echo ${{ steps.changed-files.outputs.all_changed_files }}
+          yarn lint ${{ steps.changed-files.outputs.all_changed_files }}
+      - name: test
+        run: |
+          yarn build
+          yarn test
