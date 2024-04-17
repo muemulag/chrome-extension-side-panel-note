@@ -1,0 +1,58 @@
+name: Front Build Prd
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+concurrency:
+  # ref for branch
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  front-build-deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/cache@v3
+        id: front-cache
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+      - run: cp .env.prd .env && rm .env.*
+      - if: ${{ steps.front-cache.outputs.cache-hit != 'true' }}
+        run: yarn
+      - run: yarn build
+      - name: rename dist folder
+        run: |
+          mkdir chrome-ext-prd.${{ github.sha }}
+          mv dist chrome-ext-prd.${{ github.sha }}/extension
+      - name: Upload Artifact
+        id: artifact-upload-step
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-ext-prd.${{ github.sha }}
+          path: chrome-ext-prd.${{ github.sha }}
+          retention-days: 14
+      - name: post comment
+        run: |
+          cat << EOF > comments
+            [prd] zip file uploaded to ${{ steps.artifact-upload-step.outputs.artifact-url }}
+          EOF
+          gh pr comment -F ./comments ${{ github.event.pull_request.html_url }}
