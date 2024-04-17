@@ -1,0 +1,9 @@
+Release <%= Time.now.getlocal("+09:00").strftime("%Y-%m-%d %H:%M:%S +0900") %>
+
+【日時】
+<%= Time.now.getlocal("+09:00").strftime("%Y-%m-%d %H:%M:%S +0900") %>
+
+【リリース内容】
+<% pull_requests.each do |pr| -%>
+<%=  pr.to_checklist_item %>
+<% end -%>
