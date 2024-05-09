@@ -2,14 +2,17 @@ import { resolve } from "path";
 
 import { crx, defineManifest } from "@crxjs/vite-plugin";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 
 import packageJson from "./package.json" assert { type: "json" };
 
 const rootDir = resolve(__dirname);
 const srcDir = resolve(rootDir, "src");
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  console.log(env);
+
   const manifest = defineManifest({
     manifest_version: 3,
     name: "Markdown SidePanel Notes",
@@ -17,7 +20,7 @@ export default defineConfig(() => {
       "Add the reading time to Chrome Extension documentation articles",
     version: packageJson.version,
     permissions: ["sidePanel", "tabs", "activeTab", "storage"],
-    host_permissions: ["<all_urls>"],
+    // host_permissions: [`${env.VITE_API_BASE_URL}/*`],
     side_panel: {
       default_path: "src/sidepanel/index.html",
     },
@@ -50,14 +53,15 @@ export default defineConfig(() => {
       },
     },
     server: {
-      port: 25174,
+      port: 5173,
       strictPort: true,
       hmr: {
-        port: 25174,
+        port: 5173,
       },
     },
     define: {
       __APP_VERSION__: JSON.stringify(packageJson.version),
+      global: {},
     },
   };
 });

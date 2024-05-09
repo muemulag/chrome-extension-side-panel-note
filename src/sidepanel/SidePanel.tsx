@@ -1,8 +1,7 @@
-import SimpleMDE from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
+import Editor from "../component/editor/editor";
 
 const SidePanel = () => {
-  return <SimpleMDE />;
+  return <Editor />;
 };
 
 export default SidePanel;
